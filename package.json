@@ -1,0 +1,28 @@
+{
+  "name": "questionsandanswersapi",
+  "version": "1.0.0",
+  "description": "Questions and Answers API",
+  "main": "index.js",
+  "scripts": {
+    "start": "nodemon server",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/System-Design-Capstone-Team-Tartan/QuestionsAndAnswersAPI.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/System-Design-Capstone-Team-Tartan/QuestionsAndAnswersAPI/issues"
+  },
+  "homepage": "https://github.com/System-Design-Capstone-Team-Tartan/QuestionsAndAnswersAPI#readme",
+  "dependencies": {
+    "express": "^4.17.2"
+  },
+  "devDependencies": {
+    "eslint": "^8.6.0",
+    "eslint-config-airbnb-base": "^15.0.0",
+    "eslint-plugin-import": "^2.25.4"
+  }
+}
