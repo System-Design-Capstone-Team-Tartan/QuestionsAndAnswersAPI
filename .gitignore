@@ -1,2 +1,8 @@
+## Mac Files ##
+**.DS_Store
+
 ## NPM ##
 node_modules/
+
+## DB init data ##
+**/data
