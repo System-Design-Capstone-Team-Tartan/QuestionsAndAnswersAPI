@@ -8,6 +8,7 @@ mongosh qa \
 
 # ensure header id's align between import csv(s) via validation
 # question.csv headers: question_id, product_id, question_body, question_date, asker_name, asker_email, reported, question_helpfulness
+
 mongosh qa \
   --eval 'db.createCollection("questions", {
     validator: {
@@ -175,7 +176,8 @@ mongoimport \
   -d qa \
   -c questions \
   --type csv \
-  --file ../data/testQuestions.csv \
+  --file ./database/data/testData/testQuestions.csv \
+  # --file ./database/data/questions.csv \
   --headerline
 
 # query to show questions collection
@@ -187,19 +189,21 @@ mongoimport \
   -d qa \
   -c answers \
   --type csv \
-  --file ../data/testAnswers.csv \
+  --file ./database/data/testData/testAnswers.csv \
+  # --file ./database/data/answers.csv \
   --headerline
 
-# query to show answers collection
-# mongosh qa \
-#   --eval 'db.answers.find()'
+# # query to show answers collection
+# # mongosh qa \
+# #   --eval 'db.answers.find()'
 
 # import all answers photos
 mongoimport \
   -d qa \
   -c answersPhotos \
   --type csv \
-  --file ../data/testAnswersPhotos.csv \
+  --file ./database/data/testData/testAnswersPhotos.csv \
+  # --file ./database/data/answers_photos.csv \
   --headerline
 
 # query to show answersPhotos collection
@@ -215,7 +219,8 @@ mongosh qa \
   --eval 'db.questions.find().count()'
 
 echo 'Number of Rows within questions CSV table'
-wc -l ../data/testQuestions.csv
+wc -l ./database/data/testData/testQuestions.csv
+# wc -l ./database/data/questions.csv
 
 echo '=========================================='
 
@@ -224,7 +229,8 @@ mongosh qa \
   --eval 'db.answers.find().count()'
 
 echo 'Number of Rows within answers CSV table'
-wc -l ../data/testAnswers.csv
+wc -l ./database/data/testData/testAnswers.csv
+# wc -l ./database/data/answers.csv
 
 echo '=========================================='
 
@@ -233,4 +239,5 @@ mongosh qa \
   --eval 'db.answersPhotos.find().count()'
 
 echo 'Number of Rows within answersPhotos CSV table'
-wc -l ../data/testAnswersPhotos.csv
+wc -l ./database/data/testData/testAnswersPhotos.csv
+# wc -l ./database/data/answers_photos.csv

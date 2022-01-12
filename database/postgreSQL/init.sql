@@ -14,7 +14,8 @@ CREATE TABLE questions (
   PRIMARY KEY (question_id)
 );
 
-\copy questions FROM '../data/testQuestions.csv' csv header;
+\copy questions FROM './database/data/testData/testQuestions.csv' csv header;
+-- \copy questions FROM './database/data/questions.csv' csv header;
 
 -- answers.csv headers answer_id, question_id, answer_body, answer_date, answerer_name, answerer_email, reported, answer_helpfulness
 -- what if an answer exists for a question that doesn't exist. Do we ignore these?
@@ -35,7 +36,8 @@ CREATE TABLE answers (
     REFERENCES questions(question_id)
 );
 
-\copy answers FROM '../data/testAnswers.csv' csv header;
+\copy answers FROM './database/data/testData/testAnswers.csv' csv header;
+-- \copy answers FROM './database/data/answers.csv' csv header;
 
 -- answers_photos.csv headers photo_id, answer_id, url
 
@@ -50,4 +52,5 @@ CREATE TABLE answersPhotos (
     REFERENCES answers(answer_id)
 );
 
-\copy answersPhotos FROM '../data/testAnswersPhotos.csv' csv header;
+\copy answersPhotos FROM './database/data/testData/testAnswersPhotos.csv' csv header;
+-- \copy answersPhotos FROM './database/data/answers_photos.csv' csv header;
