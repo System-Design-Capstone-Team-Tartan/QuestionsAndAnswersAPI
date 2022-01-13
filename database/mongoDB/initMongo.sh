@@ -172,45 +172,45 @@ mongosh qa \
 ### IMPORT QUERIES
 
 # import all questions
-mongoimport \
-  -d qa \
-  -c questions \
-  --type csv \
-  --file ./database/data/testData/testQuestions.csv \
-  # --file ./database/data/questions.csv \
-  --headerline
+# mongoimport \
+#   -d qa \
+#   -c questions \
+#   --type csv \
+#   --file ./database/data/testData/testQuestions.csv \
+#   # --file ./database/data/questions.csv \
+#   --headerline
 
 # query to show questions collection
 # mongosh qa \
 #   --eval 'db.questions.find()'
 
 # import all answers
-mongoimport \
-  -d qa \
-  -c answers \
-  --type csv \
-  --file ./database/data/testData/testAnswers.csv \
-  # --file ./database/data/answers.csv \
-  --headerline
+# mongoimport \
+#   -d qa \
+#   -c answers \
+#   --type csv \
+#   --file ./database/data/testData/testAnswers.csv \
+#   # --file ./database/data/answers.csv \
+#   --headerline
 
 # # query to show answers collection
 # # mongosh qa \
 # #   --eval 'db.answers.find()'
 
 # import all answers photos
-mongoimport \
-  -d qa \
-  -c answersPhotos \
-  --type csv \
-  --file ./database/data/testData/testAnswersPhotos.csv \
-  # --file ./database/data/answers_photos.csv \
-  --headerline
+# mongoimport \
+#   -d qa \
+#   -c answersPhotos \
+#   --type csv \
+#   --file ./database/data/testData/testAnswersPhotos.csv \
+#   # --file ./database/data/answers_photos.csv \
+#   --headerline
 
 # query to show answersPhotos collection
 # mongosh qa \
 #   --eval 'db.answersPhotos.find()'
 
-### COUNT VALIDATION
+## COUNT VALIDATION
 
 echo '=========================================='
 

@@ -20,7 +20,6 @@
   },
   "homepage": "https://github.com/System-Design-Capstone-Team-Tartan/QuestionsAndAnswersAPI#readme",
   "dependencies": {
-    "csv-parse": "^5.0.4",
     "express": "^4.17.2"
   },
   "devDependencies": {
