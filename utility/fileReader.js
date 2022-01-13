@@ -1,12 +1,12 @@
+/* eslint-disable arrow-body-style */
 const fsPromises = require('fs/promises');
 const path = require('path');
 const { parser } = require('./parser');
-const { add } = require('../models/mongoDB/questions');
+const { addMany } = require('../models/mongoDB/questions');
 
 const testQuestionPath = path.resolve(__dirname, '../database/data/testData/testQuestions');
 
 fsPromises.readdir(testQuestionPath, 'utf-8')
-/* eslint-disable arrow-body-style */
   .then((files) => {
     return Promise.all(files.map((file) => {
       return fsPromises.readFile(path.resolve(__dirname, `../database/data/testData/testQuestions/${file}`), 'utf-8');
@@ -39,11 +39,16 @@ fsPromises.readdir(testQuestionPath, 'utf-8')
     }));
     return data;
   })
-  .then((rows) => {
-    return add(rows);
+  .catch((error) => {
+    throw error;
   })
-  .then((test) => {
-    console.log(test);
+  .then((rows) => {
+    return addMany(rows);
+  })
+  .catch((error) => {
+    throw error;
+  })
+  .then(() => {
     process.exit();
   });
 

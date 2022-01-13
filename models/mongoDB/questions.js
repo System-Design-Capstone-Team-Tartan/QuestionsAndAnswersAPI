@@ -1,9 +1,7 @@
 // date must be a string in YYYY-mm-dd format;
 const Question = require('./index');
 
-// question.csv headers: question_id, product_id, question_body, question_date, asker_name, asker_email, reported, question_helpfulness
-
-const add = (questions) => {
+const addMany = (questions) => {
   const questionsPromises = questions.map((question) => {
     const questionToSave = {
       question_id: question[0],
@@ -25,5 +23,5 @@ const add = (questions) => {
 };
 
 module.exports = {
-  add,
+  addMany,
 };
