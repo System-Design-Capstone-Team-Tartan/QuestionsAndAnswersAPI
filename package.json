@@ -20,7 +20,8 @@
   },
   "homepage": "https://github.com/System-Design-Capstone-Team-Tartan/QuestionsAndAnswersAPI#readme",
   "dependencies": {
-    "express": "^4.17.2"
+    "express": "^4.17.2",
+    "mongoose": "^6.1.6"
   },
   "devDependencies": {
     "eslint": "^8.6.0",

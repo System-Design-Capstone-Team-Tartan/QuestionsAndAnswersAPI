@@ -1,34 +1,51 @@
-const fs = require('fs');
+const fsPromises = require('fs/promises');
 const path = require('path');
-const { occurrenceCount } = require('./occurrenceCount');
+const { parser } = require('./parser');
+const { add } = require('../models/mongoDB/questions');
 
-const questionPath = path.resolve(__dirname, '../database/data/testData/testQuestions.csv');
+const testQuestionPath = path.resolve(__dirname, '../database/data/testData/testQuestions');
 
-// question.csv headers: question_id, product_id, question_body, question_date, asker_name, asker_email, reported, question_helpfulness
-
-fs.readFile(questionPath, 'utf-8', (err, data) => {
-  if (err) throw err;
-  const rawData = data.split('\n')[1].split(',');
-  console.log('raw data ', rawData[0]);
-  occurrenceCount(rawData[0], '"');
-  const parsedData = [];
-  for (let i = 0; i < rawData.length; i += 1) {
-    if (occurrenceCount(rawData[i], '"') === 1) {
-      let handleQuotes = rawData[i];
-      for (let j = i + 1; j < rawData.length; j += 1) {
-        handleQuotes += rawData[j];
-        if (rawData[j].includes('"')) {
-          parsedData.push(handleQuotes);
-          i = j;
-          break;
+fsPromises.readdir(testQuestionPath, 'utf-8')
+/* eslint-disable arrow-body-style */
+  .then((files) => {
+    return Promise.all(files.map((file) => {
+      return fsPromises.readFile(path.resolve(__dirname, `../database/data/testData/testQuestions/${file}`), 'utf-8');
+    }));
+  })
+  .catch((error) => {
+    throw error;
+  })
+  .then((files) => {
+    return Promise.all(files.map((file) => {
+      return file.split('\n');
+    }));
+  })
+  .catch((error) => {
+    throw error;
+  })
+  .then((files) => {
+    const data = [];
+    Promise.all(files.map((file) => {
+      return file.map((row, idx) => {
+        if (idx > 0) {
+          if (row.length !== 0) {
+            const delimittedData = row.split(',');
+            const parsedData = parser(delimittedData);
+            data.push(parsedData);
+          }
         }
-      }
-    } else {
-      parsedData.push(rawData[i]);
-    }
-  }
-  console.log(parsedData);
-});
+        return row;
+      });
+    }));
+    return data;
+  })
+  .then((rows) => {
+    return add(rows);
+  })
+  .then((test) => {
+    console.log(test);
+    process.exit();
+  });
 
 // answers_photos: 0 = photo_id, 1 = answer_id, 2 = URL
 

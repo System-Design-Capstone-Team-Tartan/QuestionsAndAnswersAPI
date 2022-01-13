@@ -209,35 +209,3 @@ mongosh qa \
 # query to show answersPhotos collection
 # mongosh qa \
 #   --eval 'db.answersPhotos.find()'
-
-## COUNT VALIDATION
-
-echo '=========================================='
-
-echo 'Number of Rows in questions table'
-mongosh qa \
-  --eval 'db.questions.find().count()'
-
-echo 'Number of Rows within questions CSV table'
-wc -l ./database/data/testData/testQuestions.csv
-# wc -l ./database/data/questions.csv
-
-echo '=========================================='
-
-echo 'Number of Rows in answers table'
-mongosh qa \
-  --eval 'db.answers.find().count()'
-
-echo 'Number of Rows within answers CSV table'
-wc -l ./database/data/testData/testAnswers.csv
-# wc -l ./database/data/answers.csv
-
-echo '=========================================='
-
-echo 'Number of Rows in answersPhotos table'
-mongosh qa \
-  --eval 'db.answersPhotos.find().count()'
-
-echo 'Number of Rows within answersPhotos CSV table'
-wc -l ./database/data/testData/testAnswersPhotos.csv
-# wc -l ./database/data/answers_photos.csv
