@@ -17,6 +17,29 @@ const questionsSchema = new mongoose.Schema({
   question_helpfulness: { type: Number },
 });
 
-const Question = mongoose.model('Question', questionsSchema);
+const answersSchema = new mongoose.Schema({
+  answer_id: { type: Number, unique: true },
+  question_id: { type: Number },
+  answer_body: { type: String },
+  answer_date: { type: String },
+  answerer_name: { type: String },
+  answerer_email: { type: String },
+  reported: { type: Number },
+  answer_helpfulness: { type: Number },
+});
 
-module.exports = Question;
+const answersPhotosSchema = new mongoose.Schema({
+  photo_id: { type: Number, unique: true },
+  answer_id: { type: Number },
+  url: { type: String },
+});
+
+const Question = mongoose.model('Question', questionsSchema);
+const Answer = mongoose.model('Answer', answersSchema);
+const AnswersPhotos = mongoose.model('AnswersPhotos', answersPhotosSchema);
+
+module.exports = {
+  Question,
+  Answer,
+  AnswersPhotos,
+};

@@ -1,9 +1,7 @@
 // date must be a string in YYYY-mm-dd format;
-const Question = require('./index');
+const { Question } = require('./index');
 
-let invokedCount = 0;
-
-async function addMany(questions) {
+async function insertMany(questions) {
   const questionsToInsert = questions.map((question) => {
     const questionSchema = {
       question_id: question[0],
@@ -17,8 +15,6 @@ async function addMany(questions) {
     };
     return questionSchema;
   });
-  // invokedCount += 1;
-  // console.log('Invoked Count ', invokedCount);
   try {
     const bulkInserted = Question.insertMany(
       questionsToInsert,
@@ -35,7 +31,7 @@ async function addMany(questions) {
 }
 
 module.exports = {
-  addMany,
+  insertMany,
 };
 
 // return Question.findOneAndUpdate(
