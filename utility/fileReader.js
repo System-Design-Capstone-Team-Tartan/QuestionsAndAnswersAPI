@@ -3,6 +3,7 @@
 /* eslint-disable no-loop-func */
 
 const fs = require('fs');
+const readline = require('readline');
 // const fsPromises = require('fs/promises');
 const { exec } = require('child_process');
 const path = require('path');
@@ -23,35 +24,41 @@ exec(`wc -l < ${pathToQuestions}`, (err, results) => {
   fs.readdir(questionPath, 'utf-8', (err, files) => {
     if (err) throw err;
     for (let i = 0; i < files.length; i += 1) {
-      const file = files[i];
-      const questionFilePath = path.resolve(__dirname, `../database/data/questions/${file}`);
-      fs.readFile(questionFilePath, 'utf-8', (err, data) => {
-        if (err) throw err;
-        const splitDataByRow = data.split('\n');
-        const dataPerFile = [];
-        for (let j = 0; j < splitDataByRow.length; j += 1) {
-          const row = splitDataByRow[j];
-          if (j > 0) {
-            if (row.length !== 0) {
-              const delimittedData = row.split(',');
-              const parsedData = parser(delimittedData);
-              dataPerFile.push(parsedData);
-            }
-          }
-        }
-        filesUploaded += 1;
-        console.log('FileCount / Total Files / Rows per File ', filesUploaded, files.length, dataPerFile.length);
-        addMany(dataPerFile, (err, saved) => {
-          if (err) console.log(err);
-          rowsUploaded += saved.length;
-          console.log('Total Uploaded from Mongoose ', rowsUploaded, totalRows);
-          if (rowsUploaded === totalRows) {
-            // time end
-            console.timeEnd();
-            process.exit();
-          }
-        });
+      const questionFilePath = path.resolve(__dirname, `../database/data/questions/${files[i]}`);
+      const file = readline.createInterface({
+        input: fs.createReadStream(questionFilePath),
+        output: process.stdout,
+        terminal: false,
       });
+      file.on('line', (line) => {
+        const parsedData = parser(line);
+      });
+      // fs.readFile(questionFilePath, 'utf-8', (err, data) => {
+      //   if (err) throw err;
+      // const dataPerFile = [];
+      // for (let j = 0; j < splitDataByRow.length; j += 1) {
+      //   const row = splitDataByRow[j];
+      //   if (j > 0) {
+      //     if (row.length !== 0) {
+      //       const delimittedData = row.split(',');
+      //       const parsedData = parser(delimittedData);
+      //       dataPerFile.push(parsedData);
+      //     }
+      //   }
+      // }
+      // filesUploaded += 1;
+      // console.log('FileCount / Total Files / Rows per File ', filesUploaded, files.length, dataPerFile.length);
+      // addMany(dataPerFile, (err, saved) => {
+      //   if (err) console.log(err);
+      //   rowsUploaded += saved.length;
+      //   console.log('Total Uploaded from Mongoose ', rowsUploaded, totalRows);
+      //   if (rowsUploaded === totalRows) {
+      //     // time end
+      //     console.timeEnd();
+      //     process.exit();
+      //   }
+      // });
+      // });
     }
   });
 });
