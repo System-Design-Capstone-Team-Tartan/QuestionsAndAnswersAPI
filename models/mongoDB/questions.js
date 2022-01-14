@@ -3,7 +3,7 @@ const Question = require('./index');
 
 let invokedCount = 0;
 
-const addMany = (questions, cb) => {
+async function addMany(questions) {
   const questionsToInsert = questions.map((question) => {
     const questionSchema = {
       question_id: question[0],
@@ -17,23 +17,22 @@ const addMany = (questions, cb) => {
     };
     return questionSchema;
   });
-  invokedCount += 1;
-  console.log('Invoked Count ', invokedCount);
-  return Question.insertMany(
-    questionsToInsert,
-    {
-      limit: 1000, // 1000 seems to be the most optimal
-      ordered: false,
-      lean: false,
-    },
-    (err, saved) => {
-      if (err) {
-        cb(err, null);
-      }
-      cb(null, saved);
-    },
-  );
-};
+  // invokedCount += 1;
+  // console.log('Invoked Count ', invokedCount);
+  try {
+    const bulkInserted = Question.insertMany(
+      questionsToInsert,
+      {
+        limit: 1000, // 1000 seems to be the most optimal
+        ordered: false,
+        lean: false,
+      },
+    );
+    return bulkInserted;
+  } catch (e) {
+    console.error(e);
+  }
+}
 
 module.exports = {
   addMany,

@@ -29,13 +29,13 @@
 #                 {print > file}' ./database/data/testData/testQuestions.csv
 
 awk -v l=1000 '(NR==1){header=$0;next}
-                (NR%l==2) {
-                  close(file);
-                  file=sprintf("%s.%0.5d.csv",FILENAME,++c)
-                  sub(/csv[.]/,"",file)
-                  print header > file
-                }
-                {print > file}' ./database/data/questions.csv
+              (NR%l==2) {
+                close(file);
+                file=sprintf("%s.%0.5d.csv",FILENAME,++c)
+                sub(/csv[.]/,"",file)
+                print header > file
+              }
+              {print > file}' ./database/data/questions.csv
 
 # awk -v l=100000 '(NR==1){header=$0;next}
 #                 (NR%l==2) {

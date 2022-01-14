@@ -2,48 +2,116 @@
 /* eslint-disable no-shadow */
 /* eslint-disable no-loop-func */
 
-const fs = require('fs');
-const readline = require('readline');
-// const fsPromises = require('fs/promises');
-const { exec } = require('child_process');
+// asyn requires
+// const fs = require('fs');
+// const readline = require('readline');
+// const { exec } = require('child_process');
+
+// promises require
+const util = require('util');
+const exec = util.promisify(require('child_process').exec);
+const fsPromises = require('fs/promises');
+
+// repo require
 const path = require('path');
 const { parser } = require('./parser');
 const { addMany } = require('../models/mongoDB/questions');
 
 // various paths
 const pathToQuestions = path.resolve(__dirname, '../database/data/questions.csv');
-const questionPath = path.resolve(__dirname, '../database/data/questions');
+const pathToQuestionsSplit = path.resolve(__dirname, '../database/data/questions');
 
-exec(`wc -l < ${pathToQuestions}`, (err, results) => {
-  if (err) throw err;
-  // start time
-  console.time();
-  const totalRows = Number(results) - 1;
-  let rowsUploaded = 0;
-  let filesUploaded = 0;
-  fs.readdir(questionPath, 'utf-8', (err, files) => {
-    if (err) throw err;
-    for (let i = 0; i < files.length; i += 1) {
-      const questionFilePath = path.resolve(__dirname, `../database/data/questions/${files[i]}`);
-      fs.readFile(questionFilePath, 'utf-8', (err, data) => {
-        if (err) throw err;
-        const fileData = parser(data.split('\n'));
-        filesUploaded += 1;
-        console.log('FileCount / Total Files / Rows per File ', filesUploaded, files.length, fileData.length);
-        addMany(fileData, (err, saved) => {
-          if (err) console.log(err);
-          rowsUploaded += saved.length;
-          console.log('Total Uploaded from Mongoose ', rowsUploaded, totalRows);
-          if (rowsUploaded === totalRows) {
-            // time end
-            console.timeEnd();
-            process.exit();
-          }
-        });
-      });
+// get total rows in csv import
+async function getRowCount() {
+  try {
+    const { stdout, stderr } = await exec(`wc -l < ${pathToQuestions}`);
+    // numberize and remove 1 for header;
+    return Number(stdout) - 1;
+  } catch (e) {
+    console.error(e);
+  }
+}
+
+// get all files in the directory
+async function getFiles() {
+  try {
+    const splitFiles = await fsPromises.readdir(pathToQuestionsSplit);
+    return splitFiles;
+  } catch (e) {
+    console.error(e);
+  }
+}
+
+// read a file's contents
+async function readFileAndParse(fileName) {
+  const pathToSplitQuestion = path.resolve(__dirname, `../database/data/questions/${fileName}`);
+  try {
+    const fileContent = await fsPromises.readFile(pathToSplitQuestion, 'utf-8');
+    const parsedData = parser(fileContent.split('\n'));
+    return parsedData;
+  } catch (e) {
+    console.error(e);
+  }
+}
+
+async function handleBatchInserts() {
+  const splitFiles = await getFiles();
+  const totalRowsToInsert = await getRowCount();
+  try {
+    const insertedData = [];
+    let rowsInserted = 0;
+    for (let i = 0; i < splitFiles.length; i += 1) {
+      const parsedData = await readFileAndParse(splitFiles[i]);
+      const bulkInserted = await addMany(parsedData);
+      rowsInserted += bulkInserted.length;
+      console.log('Running Process Rows Inserted / Total ', rowsInserted, totalRowsToInsert);
+      insertedData.push(bulkInserted);
     }
-  });
-});
+    return rowsInserted;
+  } catch (e) {
+    console.error(e);
+  }
+}
+
+async function handleEndProcess() {
+  const totalRowsToInsert = await getRowCount();
+  const totalRowsInserted = await handleBatchInserts();
+  if (totalRowsToInsert === totalRowsInserted) {
+    process.exit();
+  }
+}
+handleEndProcess();
+
+// exec(`wc -l < ${pathToQuestions}`, (err, results) => {
+//   if (err) throw err;
+//   // start time
+//   console.time();
+//   const totalRows = Number(results) - 1;
+//   let rowsUploaded = 0;
+//   let filesUploaded = 0;
+//   fs.readdir(questionPath, 'utf-8', (err, files) => {
+//     if (err) throw err;
+//     for (let i = 0; i < files.length; i += 1) {
+//       const questionFilePath = path.resolve(__dirname, `../database/data/questions/${files[i]}`);
+//       fs.readFile(questionFilePath, 'utf-8', (err, data) => {
+//         if (err) throw err;
+//         const fileData = parser(data.split('\n'));
+//         filesUploaded += 1;
+//         console.log('FileCount / Total Files / Rows per File ', filesUploaded, files.length, fileData.length);
+//         addMany(fileData, (err, saved) => {
+//           if (err) console.log(err);
+//           rowsUploaded += saved.length;
+//           console.log('Total Uploaded from Mongoose ', rowsUploaded, totalRows);
+//           if (rowsUploaded === totalRows) {
+//             // time end
+//             console.timeEnd();
+//             process.exit();
+//           }
+//         });
+//       });
+//     }
+//   });
+// });
 
 // exec(`wc -l < ${pathToQuestions}`, (err, results) => {
 //   const totalRows = Number(results);
