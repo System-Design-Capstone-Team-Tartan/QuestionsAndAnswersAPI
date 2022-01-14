@@ -32,6 +32,22 @@ exec(`wc -l < ${pathToQuestions}`, (err, results) => {
       });
       file.on('line', (line) => {
         const parsedData = parser(line);
+        console.log(parsedData);
+        // if line is a header, let for-loop continue
+        if (parsedData[0] !== 'question_id') {
+          filesUploaded += 1;
+          console.log('FileCount / Total Files / Rows per File ', filesUploaded, files.length, 1000);
+          addMany(parsedData, (err, saved) => {
+            if (err) throw err;
+            rowsUploaded += saved.length;
+            console.log('Total Uploaded from Mongoose ', rowsUploaded, totalRows);
+            if (rowsUploaded === totalRows) {
+              // time end
+              console.timeEnd();
+              process.exit();
+            }
+          });
+        }
       });
       // fs.readFile(questionFilePath, 'utf-8', (err, data) => {
       //   if (err) throw err;
