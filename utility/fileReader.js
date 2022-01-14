@@ -23,6 +23,7 @@ exec(`wc -l < ${pathToQuestions}`, (err, results) => {
   let filesUploaded = 0;
   fs.readdir(questionPath, 'utf-8', (err, files) => {
     if (err) throw err;
+    console.log(files);
     for (let i = 0; i < files.length; i += 1) {
       const questionFilePath = path.resolve(__dirname, `../database/data/questions/${files[i]}`);
       const file = readline.createInterface({
@@ -30,12 +31,11 @@ exec(`wc -l < ${pathToQuestions}`, (err, results) => {
         output: process.stdout,
         terminal: false,
       });
+      filesUploaded += 1;
       file.on('line', (line) => {
         const parsedData = parser(line);
-        console.log(parsedData);
         // if line is a header, let for-loop continue
         if (parsedData[0] !== 'question_id') {
-          filesUploaded += 1;
           console.log('FileCount / Total Files / Rows per File ', filesUploaded, files.length, 1000);
           addMany(parsedData, (err, saved) => {
             if (err) throw err;
