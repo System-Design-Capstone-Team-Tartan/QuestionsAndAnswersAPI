@@ -3,17 +3,20 @@ const Question = require('./index');
 
 let invokedCount = 0;
 
-const addMany = (row, cb) => {
-  const questionsToInsert = {
-    question_id: row[0],
-    product_id: row[1],
-    question_body: row[2],
-    question_date: row[3],
-    asker_name: row[4],
-    asker_email: row[5],
-    reported: row[6],
-    question_helpfulness: row[7],
-  };
+const addMany = (questions, cb) => {
+  const questionsToInsert = questions.map((question) => {
+    const questionSchema = {
+      question_id: question[0],
+      product_id: question[1],
+      question_body: question[2],
+      question_date: question[3],
+      asker_name: question[4],
+      asker_email: question[5],
+      reported: question[6],
+      question_helpfulness: question[7],
+    };
+    return questionSchema;
+  });
   invokedCount += 1;
   console.log('Invoked Count ', invokedCount);
   return Question.insertMany(
