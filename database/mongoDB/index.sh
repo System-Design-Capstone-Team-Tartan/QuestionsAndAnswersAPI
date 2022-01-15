@@ -1,32 +1,32 @@
 #!/bin/zsh
 
 ## split import data into multiple files
-awk -v l=1000 '(NR==1){header=$0;next}
-              (NR%l==2) {
-                close(file);
-                file=sprintf("%s.%0.5d.csv",FILENAME,++c)
-                sub(/csv[.]/,"",file)
-                print header > file
-              }
-              {print > file}' ./database/data/questions.csv
+awk -v l=10000  '(NR==1){header=$0;next}
+                (NR%l==2) {
+                  close(file);
+                  file=sprintf("%s.%0.5d.csv",FILENAME,++c)
+                  sub(/csv[.]/,"",file)
+                  print header > file
+                }
+                {print > file}' ./database/data/questions.csv
 
-awk -v l=1000 '(NR==1){header=$0;next}
-              (NR%l==2) {
-                close(file);
-                file=sprintf("%s.%0.5d.csv",FILENAME,++c)
-                sub(/csv[.]/,"",file)
-                print header > file
-              }
-              {print > file}' ./database/data/answers.csv
+awk -v l=10000  '(NR==1){header=$0;next}
+                (NR%l==2) {
+                  close(file);
+                  file=sprintf("%s.%0.5d.csv",FILENAME,++c)
+                  sub(/csv[.]/,"",file)
+                  print header > file
+                }
+                {print > file}' ./database/data/answers.csv
 
-awk -v l=1000 '(NR==1){header=$0;next}
-              (NR%l==2) {
-                close(file);
-                file=sprintf("%s.%0.5d.csv",FILENAME,++c)
-                sub(/csv[.]/,"",file)
-                print header > file
-              }
-              {print > file}' ./database/data/answers_photos.csv
+awk -v l=10000  '(NR==1){header=$0;next}
+                (NR%l==2) {
+                  close(file);
+                  file=sprintf("%s.%0.5d.csv",FILENAME,++c)
+                  sub(/csv[.]/,"",file)
+                  print header > file
+                }
+                {print > file}' ./database/data/answers_photos.csv
 
 ## create directory if exists
 rm -rf ./database/data/questions

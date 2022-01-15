@@ -19,7 +19,7 @@ const insertMany = async (questions) => {
     const bulkInserted = Question.insertMany(
       questionsToInsert,
       {
-        limit: 1000, // 1000 seems to be the most optimal
+        limit: 10000,
         ordered: false,
         lean: false,
       },
