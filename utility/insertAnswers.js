@@ -1,7 +1,14 @@
+/* eslint-disable no-await-in-loop */ // await insert into database before next
+/* eslint-disable consistent-return */ // no return in catch blocks to break script
+/* eslint-disable no-console */ // console is intended show process times and errors
+
 // promises require
 const util = require('util');
 const exec = util.promisify(require('child_process').exec);
 const fsPromises = require('fs/promises');
+
+// process statistics
+const v8 = require('v8');
 
 // repo require
 const path = require('path');
@@ -13,38 +20,38 @@ const pathToAnswers = path.resolve(__dirname, '../database/data/answers.csv');
 const pathToAnswersSplit = path.resolve(__dirname, '../database/data/answers');
 
 // get total rows in csv import
-async function getRowCount() {
+const getRowCount = async () => {
   try {
-    const { stdout, stderr } = await exec(`wc -l < ${pathToAnswers}`);
+    const { stdout } = await exec(`wc -l < ${pathToAnswers}`);
     return Number(stdout);
-  } catch (e) {
-    console.error(e);
+  } catch (error) {
+    console.error(error.stderr);
   }
-}
+};
 
 // get all files in the directory
-async function getFiles() {
+const getFiles = async () => {
   try {
     const splitFiles = await fsPromises.readdir(pathToAnswersSplit);
     return splitFiles;
-  } catch (e) {
-    console.error(e);
+  } catch (error) {
+    console.error(error);
   }
-}
+};
 
 // read a file's contents
-async function readFileAndParse(fileName) {
+const readFileAndParse = async (fileName) => {
   const pathToSplitAnswers = path.resolve(pathToAnswersSplit, `${fileName}`);
   try {
     const fileContent = await fsPromises.readFile(pathToSplitAnswers, 'utf-8');
     const parsedData = parser(fileContent.split('\n'));
     return parsedData;
-  } catch (e) {
-    console.error(e);
+  } catch (error) {
+    console.error(error);
   }
-}
+};
 
-async function handleBatchInserts() {
+const handleBatchInserts = async () => {
   const splitFiles = await getFiles();
   const totalRowsToInsert = await getRowCount();
   try {
@@ -56,20 +63,36 @@ async function handleBatchInserts() {
       console.log('Running Process Answers -- Rows Inserted / Total ', rowsInserted, totalRowsToInsert);
     }
     return rowsInserted;
-  } catch (e) {
-    console.error(e);
+  } catch (error) {
+    console.error(error);
   }
-}
+};
 
-async function handleEndProcess() {
-  console.time();
-  const totalRowsToInsert = await getRowCount();
-  const totalRowsInserted = await handleBatchInserts();
-  if (totalRowsToInsert === totalRowsInserted) {
-    console.timeEnd();
-    process.exit();
+const handleEndProcess = async () => {
+  try {
+    console.time();
+    const totalRowsToInsert = await getRowCount();
+    const totalRowsInserted = await handleBatchInserts();
+    // process check
+    if (totalRowsToInsert === totalRowsInserted) {
+      console.timeEnd();
+      const stats = v8.getHeapSpaceStatistics();
+      const statisticList = [];
+      for (let i = 0; i < stats.length; i += 1) {
+        const statistic = stats[i];
+        statisticList.push({
+          'Space Name': statistic.space_name,
+          'Space Size': statistic.space_size,
+          'Used Space Size': statistic.space_used_size,
+          'Space Available': statistic.space_available_size,
+          'Physical Space Size': statistic.physical_space_size,
+        });
+      }
+      console.table(statisticList);
+      process.exit();
+    }
+  } catch (error) {
+    console.error(error);
   }
-}
+};
 handleEndProcess();
-
-// answers_photos: 0 = photo_id, 1 = answer_id, 2 = URL

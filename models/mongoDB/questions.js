@@ -1,7 +1,7 @@
 // date must be a string in YYYY-mm-dd format;
 const { Question } = require('./index');
 
-async function insertMany(questions) {
+const insertMany = async (questions) => {
   const questionsToInsert = questions.map((question) => {
     const questionSchema = {
       question_id: question[0],
@@ -25,10 +25,10 @@ async function insertMany(questions) {
       },
     );
     return bulkInserted;
-  } catch (e) {
-    console.error(e);
+  } catch (error) {
+    console.error(error);
   }
-}
+};
 
 module.exports = {
   insertMany,

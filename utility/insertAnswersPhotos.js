@@ -13,16 +13,16 @@ const v8 = require('v8');
 // repo require
 const path = require('path');
 const { parser } = require('./parser');
-const { insertMany } = require('../models/mongoDB/questions');
+const { insertMany } = require('../models/mongoDB/answersPhotos');
 
 // various paths
-const pathToQuestions = path.resolve(__dirname, '../database/data/questions.csv');
-const pathToQuestionsSplit = path.resolve(__dirname, '../database/data/questions');
+const pathToAnswersPhotos = path.resolve(__dirname, '../database/data/answers_photos.csv');
+const pathToAnswersPhotosSplit = path.resolve(__dirname, '../database/data/answers_photos');
 
 // get total rows in csv import
 const getRowCount = async () => {
   try {
-    const { stdout } = await exec(`wc -l < ${pathToQuestions}`);
+    const { stdout } = await exec(`wc -l < ${pathToAnswersPhotos}`);
     return Number(stdout);
   } catch (error) {
     console.error(error);
@@ -32,7 +32,7 @@ const getRowCount = async () => {
 // get all files in the directory
 const getFiles = async () => {
   try {
-    const splitFiles = await fsPromises.readdir(pathToQuestionsSplit);
+    const splitFiles = await fsPromises.readdir(pathToAnswersPhotosSplit);
     return splitFiles;
   } catch (error) {
     console.error(error);
@@ -41,9 +41,9 @@ const getFiles = async () => {
 
 // read a file's contents
 const readFileAndParse = async (fileName) => {
-  const pathToSplitQuestion = path.resolve(pathToQuestionsSplit, `${fileName}`);
+  const pathToSplitAnswers = path.resolve(pathToAnswersPhotosSplit, `${fileName}`);
   try {
-    const fileContent = await fsPromises.readFile(pathToSplitQuestion, 'utf-8');
+    const fileContent = await fsPromises.readFile(pathToSplitAnswers, 'utf-8');
     const parsedData = parser(fileContent.split('\n'));
     return parsedData;
   } catch (error) {
@@ -60,7 +60,7 @@ const handleBatchInserts = async () => {
       const parsedData = await readFileAndParse(splitFiles[i]);
       const bulkInserted = await insertMany(parsedData);
       rowsInserted += bulkInserted.length;
-      console.log('Running Process Questions -- Rows Inserted / Total ', rowsInserted, totalRowsToInsert);
+      console.log('Running Process Answers Photos -- Rows Inserted / Total ', rowsInserted, totalRowsToInsert);
     }
     return rowsInserted;
   } catch (error) {
