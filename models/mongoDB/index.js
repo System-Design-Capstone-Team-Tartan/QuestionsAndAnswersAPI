@@ -8,7 +8,7 @@ mongoose.connect('mongodb://localhost/qa', (err) => {
 
 const questionsSchema = new mongoose.Schema({
   question_id: { type: Number, unique: true },
-  product_id: { type: Number },
+  product_id: { type: Number, index: true },
   question_body: { type: String },
   question_date: { type: String },
   asker_name: { type: String },
@@ -19,7 +19,7 @@ const questionsSchema = new mongoose.Schema({
 
 const answersSchema = new mongoose.Schema({
   answer_id: { type: Number, unique: true },
-  question_id: { type: Number },
+  question_id: { type: Number, index: true },
   answer_body: { type: String },
   answer_date: { type: String },
   answerer_name: { type: String },
@@ -30,7 +30,7 @@ const answersSchema = new mongoose.Schema({
 
 const answersPhotosSchema = new mongoose.Schema({
   photo_id: { type: Number, unique: true },
-  answer_id: { type: Number },
+  answer_id: { type: Number, index: true },
   url: { type: String },
 });
 

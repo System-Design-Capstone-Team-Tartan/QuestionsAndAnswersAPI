@@ -13,7 +13,7 @@ const insertMany = async (answersPhotos) => {
     const bulkInserted = AnswersPhotos.insertMany(
       answersPhotosToInsert,
       {
-        limit: 1000, // 1000 seems to be the most optimal
+        limit: 10000, // 1000 seems to be the most optimal
         ordered: false,
         lean: false,
       },

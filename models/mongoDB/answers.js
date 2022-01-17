@@ -19,7 +19,7 @@ const insertMany = async (answers) => {
     const bulkInserted = Answer.insertMany(
       answersToInsert,
       {
-        limit: 1000, // 1000 seems to be the most optimal
+        limit: 10000, // 1000 seems to be the most optimal
         ordered: false,
         lean: false,
       },
@@ -30,8 +30,28 @@ const insertMany = async (answers) => {
   }
 };
 
+const findAllBy = async (questionId) => {
+  try {
+    const answersFound = await Answer.aggregate([
+      { $match: { question_id: Number(questionId) } },
+      {
+        $lookup: {
+          from: 'answersphotos',
+          localField: 'answer_id',
+          foreignField: 'answer_id',
+          as: 'photos',
+        },
+      },
+    ]);
+    return answersFound;
+  } catch (error) {
+    console.error(error);
+  }
+};
+
 module.exports = {
   insertMany,
+  findAllBy,
 };
 
 // TODO: Move this to model queries
