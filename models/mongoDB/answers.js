@@ -2,20 +2,20 @@
 const { Answer } = require('./index');
 
 const insertMany = async (answers) => {
-  const answersToInsert = answers.map((answer) => {
-    const answerSchema = {
-      answer_id: answer[0],
-      question_id: answer[1],
-      answer_body: answer[2],
-      answer_date: answer[3],
-      asker_name: answer[4],
-      asker_email: answer[5],
-      reported: answer[6],
-      answer_helpfulness: answer[7],
-    };
-    return answerSchema;
-  });
   try {
+    const answersToInsert = answers.map((answer) => {
+      const answerSchema = {
+        answer_id: answer[0],
+        question_id: answer[1],
+        answer_body: answer[2],
+        answer_date: answer[3],
+        asker_name: answer[4],
+        asker_email: answer[5],
+        reported: answer[6],
+        answer_helpfulness: answer[7],
+      };
+      return answerSchema;
+    });
     const bulkInserted = Answer.insertMany(
       answersToInsert,
       {
@@ -53,16 +53,3 @@ module.exports = {
   insertMany,
   findAllBy,
 };
-
-// TODO: Move this to model queries
-// script to simulate a join between answers and answers' photos
-// mongosh qa --eval 'db.answers.aggregate([
-  // {
-    // "$lookup": {
-      // "from": "answersPhotos",
-      // "localField": "answer_id",
-      // "foreignField": "answer_id",
-      // "as": "photos"
-    // }
-  // }
-// ])'
