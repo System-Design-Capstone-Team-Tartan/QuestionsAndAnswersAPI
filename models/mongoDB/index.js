@@ -1,0 +1,45 @@
+const mongoose = require('mongoose');
+
+mongoose.connect('mongodb://localhost/qa', (err) => {
+  if (err) {
+    throw err;
+  }
+});
+
+const questionsSchema = new mongoose.Schema({
+  question_id: { type: Number, unique: true },
+  product_id: { type: Number },
+  question_body: { type: String },
+  question_date: { type: String },
+  asker_name: { type: String },
+  asker_email: { type: String },
+  reported: { type: Number },
+  question_helpfulness: { type: Number },
+});
+
+const answersSchema = new mongoose.Schema({
+  answer_id: { type: Number, unique: true },
+  question_id: { type: Number },
+  answer_body: { type: String },
+  answer_date: { type: String },
+  answerer_name: { type: String },
+  answerer_email: { type: String },
+  reported: { type: Number },
+  answer_helpfulness: { type: Number },
+});
+
+const answersPhotosSchema = new mongoose.Schema({
+  photo_id: { type: Number, unique: true },
+  answer_id: { type: Number },
+  url: { type: String },
+});
+
+const Question = mongoose.model('Question', questionsSchema);
+const Answer = mongoose.model('Answer', answersSchema);
+const AnswersPhotos = mongoose.model('AnswersPhotos', answersPhotosSchema);
+
+module.exports = {
+  Question,
+  Answer,
+  AnswersPhotos,
+};
