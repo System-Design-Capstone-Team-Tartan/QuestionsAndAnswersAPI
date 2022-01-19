@@ -50,7 +50,43 @@ const add = async (productId, body, name, email) => {
   }
 };
 
+const markHelpful = async (questionId) => {
+  try {
+    let markedHelpful;
+    if (await Question.exists({ question_id: questionId })) {
+      markedHelpful = await Question.findOneAndUpdate(
+        { question_id: questionId },
+        { $inc: { question_helpfulness: 1 } },
+        { returnDocument: 'after' },
+      );
+    }
+    return markedHelpful;
+  } catch (error) {
+    console.error('Error with database query');
+    return error;
+  }
+};
+
+const report = async (questionId) => {
+  try {
+    let reported;
+    if (await Question.exists({ question_id: questionId })) {
+      reported = await Question.findOneAndUpdate(
+        { question_id: questionId },
+        { reported: 1 },
+        { returnDocument: 'after' },
+      );
+    }
+    return reported;
+  } catch (error) {
+    console.error('Error with database query');
+    return error;
+  }
+};
+
 module.exports = {
   findAllBy,
   add,
+  markHelpful,
+  report,
 };

@@ -1,4 +1,4 @@
-const { findAllBy, add } = require('../../models/mongoDB/answers');
+const { findAllBy, add, markHelpful, report } = require('../../models/mongoDB/answers');
 
 const getAnswers = async (req, res) => {
   try {
@@ -47,7 +47,45 @@ const addAnswer = async (req, res) => {
   }
 };
 
+const markAnswerHelpful = async (req, res) => {
+  try {
+    if (req.params.answer_id === undefined) {
+      throw new Error('Please provide an answer id');
+    }
+    const answerId = req.params.answer_id;
+    const markedHelpfulAnswer = await markHelpful(answerId);
+    if (markedHelpfulAnswer === undefined) {
+      throw new Error('No such answer id found');
+    }
+    console.log(markedHelpfulAnswer);
+    return res.send(markedHelpfulAnswer);
+  } catch (error) {
+    console.error(error);
+    return res.status(400).send(error);
+  }
+};
+
+const reportAnswer = async (req, res) => {
+  try {
+    if (req.params.answer_id === undefined) {
+      throw new Error('Please provide an answer id');
+    }
+    const answerId = req.params.answer_id;
+    const reportedAnswer = await report(answerId);
+    if (reportedAnswer === undefined) {
+      throw new Error('No such answer id found');
+    }
+    console.log(reportedAnswer);
+    return res.send(reportedAnswer);
+  } catch (error) {
+    console.error(error);
+    return res.status(400).send(error);
+  }
+};
+
 module.exports = {
   getAnswers,
   addAnswer,
+  markAnswerHelpful,
+  reportAnswer,
 };
