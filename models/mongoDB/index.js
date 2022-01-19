@@ -6,7 +6,7 @@ mongoose.connect('mongodb://localhost/qa', (err) => {
   }
 });
 
-const questionsSchema = new mongoose.Schema({
+const questionsImportSchema = new mongoose.Schema({
   question_id: { type: Number, unique: true },
   product_id: { type: Number, index: true },
   question_body: { type: String },
@@ -17,7 +17,7 @@ const questionsSchema = new mongoose.Schema({
   question_helpfulness: { type: Number },
 });
 
-const answersSchema = new mongoose.Schema({
+const answersImportSchema = new mongoose.Schema({
   answer_id: { type: Number, unique: true },
   question_id: { type: Number, index: true },
   answer_body: { type: String },
@@ -28,18 +28,21 @@ const answersSchema = new mongoose.Schema({
   answer_helpfulness: { type: Number },
 });
 
-const answersPhotosSchema = new mongoose.Schema({
+const answersPhotosImportSchema = new mongoose.Schema({
   photo_id: { type: Number, unique: true },
   answer_id: { type: Number, index: true },
   url: { type: String },
 });
 
-const Question = mongoose.model('Question', questionsSchema);
-const Answer = mongoose.model('Answer', answersSchema);
-const AnswersPhotos = mongoose.model('AnswersPhotos', answersPhotosSchema);
+// for ETL import
+const QuestionImport = mongoose.model('QuestionImport', questionsImportSchema);
+const AnswerImport = mongoose.model('AnswerImport', answersImportSchema);
+const AnswerPhotoImport = mongoose.model('AnswerPhotoImport', answersPhotosImportSchema);
+
+// for CRUD operations after combining imports
 
 module.exports = {
-  Question,
-  Answer,
-  AnswersPhotos,
+  QuestionImport,
+  AnswerImport,
+  AnswerPhotoImport,
 };
