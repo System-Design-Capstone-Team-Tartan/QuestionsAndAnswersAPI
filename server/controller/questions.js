@@ -31,8 +31,12 @@ const addQuestion = async (req, res) => {
       throw new Error('Please provide a product id');
     }
     const addedQuestion = await add(product_id, body, name, email);
+    if (addedQuestion === undefined) {
+      throw new Error('No such product id found');
+    }
     return res.send(addedQuestion);
   } catch (error) {
+    console.error(error);
     return res.status(400).send(error);
   }
 };

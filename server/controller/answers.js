@@ -32,9 +32,12 @@ const addAnswer = async (req, res) => {
     }
     const questionId = req.params.question_id;
     const addedAnswer = await add(questionId, body, name, email, photos);
-    console.log(addedAnswer);
-    return res.send();
+    if (addedAnswer === undefined) {
+      throw new Error('No such question id found');
+    }
+    return res.send(addedAnswer);
   } catch (error) {
+    console.error(error);
     return res.status(400).send(error);
   }
 };
