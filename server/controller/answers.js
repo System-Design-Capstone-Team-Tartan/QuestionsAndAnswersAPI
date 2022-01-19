@@ -11,11 +11,15 @@ const getAnswers = async (req, res) => {
     const count = req.query.count || 5;
     const foundAnswers = await findAllBy(questionId, page, count);
 
-    // console.log('found answers ', foundAnswers[0].photos);
+    // send back paginated answers
     console.log(foundAnswers);
-    res.send('getting all answers');
+    if (foundAnswers.length === 0) {
+      throw new Error('No answers found for given question id');
+    }
+    return res.send(foundAnswers);
   } catch (error) {
     console.error(error);
+    return res.status(400).send(error);
   }
 };
 
@@ -35,6 +39,7 @@ const addAnswer = async (req, res) => {
     if (addedAnswer === undefined) {
       throw new Error('No such question id found');
     }
+    console.log(addedAnswer);
     return res.send(addedAnswer);
   } catch (error) {
     console.error(error);

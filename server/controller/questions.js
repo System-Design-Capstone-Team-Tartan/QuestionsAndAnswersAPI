@@ -13,8 +13,12 @@ const getQuestions = async (req, res) => {
 
     // send back paginated questions
     console.log(foundQuestions);
+    if (foundQuestions.length === 0) {
+      throw new Error('No questions found for given product id');
+    }
     return res.send(foundQuestions);
   } catch (error) {
+    console.error(error);
     return res.status(400).send(error);
   }
 };
@@ -34,6 +38,7 @@ const addQuestion = async (req, res) => {
     if (addedQuestion === undefined) {
       throw new Error('No such product id found');
     }
+    console.log(addedQuestion);
     return res.send(addedQuestion);
   } catch (error) {
     console.error(error);

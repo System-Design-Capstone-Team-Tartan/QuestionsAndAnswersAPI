@@ -4,9 +4,9 @@ const findAllBy = async (productId, page, count) => {
   try {
     const skipBy = (page - 1) * count;
     const foundQuestions = await Question.find(
-      { product_id: productId },
+      { $and: [{ product_id: productId }, { reported: { $ne: 1 } }] },
       null,
-      { skip: skipBy, limit: count },
+      { skip: skipBy, limit: count }, // will count reported questions
     );
     return foundQuestions;
   } catch (error) {
