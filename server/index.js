@@ -16,6 +16,7 @@ const corsOptions = {
 };
 
 app.use(cors(corsOptions));
+app.use(bodyParser.json());
 app.use(morgan('dev'));
 app.use('/qa', router);
 

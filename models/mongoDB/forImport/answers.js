@@ -8,8 +8,8 @@ const insertMany = async (answers) => {
         question_id: answer[1],
         answer_body: answer[2],
         answer_date: answer[3],
-        asker_name: answer[4],
-        asker_email: answer[5],
+        answerer_name: answer[4],
+        answerer_email: answer[5],
         reported: answer[6],
         answer_helpfulness: answer[7],
       };

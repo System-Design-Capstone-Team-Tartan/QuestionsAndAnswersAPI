@@ -52,11 +52,37 @@ const questionsSchema = new mongoose.Schema({
   answers: {},
 });
 
+const lastQuestionIdSchema = new mongoose.Schema({
+  question_id: { type: Number, unique: true },
+});
+
+const answersSchema = new mongoose.Schema({
+  answer_id: { type: Number, unique: true },
+  question_id: { type: Number, index: true },
+  answer_body: { type: String },
+  answer_date: { type: String },
+  answerer_name: { type: String },
+  answerer_email: { type: String },
+  reported: { type: Number },
+  answer_helpfulness: { type: Number },
+  photos: { type: String },
+});
+
+const lastAnswerIdSchema = new mongoose.Schema({
+  answer_id: { type: Number, unique: true },
+});
+
 const Question = mongoose.model('Question', questionsSchema);
+const LastQuestionId = mongoose.model('LastQuestionId', lastQuestionIdSchema);
+const Answer = mongoose.model('Answer', answersSchema);
+const LastAnswerId = mongoose.model('LastAnswerId', lastAnswerIdSchema);
 
 module.exports = {
   QuestionImport,
   AnswerImport,
   AnswerPhotoImport,
   Question,
+  LastQuestionId,
+  Answer,
+  LastAnswerId,
 };
