@@ -40,9 +40,23 @@ const AnswerImport = mongoose.model('AnswerImport', answersImportSchema);
 const AnswerPhotoImport = mongoose.model('AnswerPhotoImport', answersPhotosImportSchema);
 
 // for CRUD operations after combining imports
+const questionsSchema = new mongoose.Schema({
+  question_id: { type: Number, unique: true },
+  product_id: { type: Number, index: true },
+  question_body: { type: String },
+  question_date: { type: String },
+  asker_name: { type: String },
+  asker_email: { type: String },
+  reported: { type: Number },
+  question_helpfulness: { type: Number },
+  answers: {},
+});
+
+const Question = mongoose.model('Question', questionsSchema);
 
 module.exports = {
   QuestionImport,
   AnswerImport,
   AnswerPhotoImport,
+  Question,
 };

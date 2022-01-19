@@ -1,4 +1,4 @@
-const { } = require('../../models/mongoDB/answers');
+// const { } = require('../../models/mongoDB/answers');
 
 const getAnswers = async (req, res) => {
   // console.log(req.params); // will be sent with params
