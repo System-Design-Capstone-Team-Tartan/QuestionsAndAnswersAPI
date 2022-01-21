@@ -1,48 +1,98 @@
-// date must be a string in YYYY-mm-dd format;
-const { Question } = require('./index');
+const { Question, LastQuestionId } = require('./index');
 
-const insertMany = async (questions) => {
-  const questionsToInsert = questions.map((question) => {
-    const questionSchema = {
-      question_id: question[0],
-      product_id: question[1],
-      question_body: question[2],
-      question_date: question[3],
-      asker_name: question[4],
-      asker_email: question[5],
-      reported: question[6],
-      question_helpfulness: question[7],
-    };
-    return questionSchema;
-  });
+const findAllBy = async (productId, page, count) => {
   try {
-    const bulkInserted = Question.insertMany(
-      questionsToInsert,
-      {
-        limit: 1000, // 1000 seems to be the most optimal
-        ordered: false,
-        lean: false,
-      },
+    const skipBy = (page - 1) * count;
+    const foundQuestions = await Question.find(
+      { $and: [{ product_id: productId }, { reported: { $ne: 1 } }] },
+      null,
+      { skip: skipBy, limit: count }, // will count reported questions
     );
-    return bulkInserted;
+    foundQuestions.map((question) => {
+      const answersTuples = Object.entries(question.answers);
+      for (let i = 0; i < answersTuples.length; i += 1) {
+        if (answersTuples[i][1].reported === 1) {
+          const answerId = answersTuples[i][0];
+          delete question.answers[answerId];
+        }
+      }
+      return question;
+    });
+    return foundQuestions;
   } catch (error) {
-    console.error(error);
+    return error;
+  }
+};
+
+const add = async (productId, body, name, email) => {
+  try {
+    let addedQuestion;
+    // if product exists
+    if (await Question.exists({ product_id: productId })) {
+    // will return latest question id before incrementing
+      const latestQuestionId = await LastQuestionId.findOneAndUpdate(
+        {},
+        { $inc: { question_id: 1 } },
+        { returnDocument: 'after' },
+      );
+      const questionToAdd = {
+        question_id: latestQuestionId.question_id,
+        product_id: productId,
+        question_body: body,
+        question_date: new Date().toISOString().split('T')[0],
+        asker_name: name,
+        asker_email: email,
+        reported: 0,
+        question_helpfulness: 0,
+        answers: {},
+      };
+      addedQuestion = await Question.findOneAndUpdate(
+        { question_id: latestQuestionId.question_id },
+        questionToAdd,
+        { returnDocument: 'after', upsert: true, runValidators: true },
+      );
+    }
+    return addedQuestion;
+  } catch (error) {
+    return error;
+  }
+};
+
+const markHelpful = async (questionId) => {
+  try {
+    let markedHelpful;
+    if (await Question.exists({ question_id: questionId })) {
+      markedHelpful = await Question.findOneAndUpdate(
+        { question_id: questionId },
+        { $inc: { question_helpfulness: 1 } },
+        { returnDocument: 'after' },
+      );
+    }
+    return markedHelpful;
+  } catch (error) {
+    return error;
+  }
+};
+
+const report = async (questionId) => {
+  try {
+    let reported;
+    if (await Question.exists({ question_id: questionId })) {
+      reported = await Question.findOneAndUpdate(
+        { question_id: questionId },
+        { reported: 1 },
+        { returnDocument: 'after', runValidators: true },
+      );
+    }
+    return reported;
+  } catch (error) {
+    return error;
   }
 };
 
 module.exports = {
-  insertMany,
+  findAllBy,
+  add,
+  markHelpful,
+  report,
 };
-
-// return Question.findOneAndUpdate(
-//   { question_id: question[0] },
-//   questionToSave,
-//   { upsert: true, new: true },
-//   (err, saved) => {
-//     if (err) {
-//       cb(err, null);
-//     }
-//     cb(null, saved);
-//   },
-// );
-// return new Question(questionToSave);

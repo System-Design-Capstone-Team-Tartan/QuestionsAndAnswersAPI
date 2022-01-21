@@ -1,48 +1,105 @@
-// date must be a string in YYYY-mm-dd format;
-const { Answer } = require('./index');
+const { Answer, LastAnswerId, Question } = require('./index');
 
-const insertMany = async (answers) => {
-  const answersToInsert = answers.map((answer) => {
-    const answerSchema = {
-      answer_id: answer[0],
-      question_id: answer[1],
-      answer_body: answer[2],
-      answer_date: answer[3],
-      asker_name: answer[4],
-      asker_email: answer[5],
-      reported: answer[6],
-      answer_helpfulness: answer[7],
-    };
-    return answerSchema;
-  });
+const findAllBy = async (questionId, page, count) => {
   try {
-    const bulkInserted = Answer.insertMany(
-      answersToInsert,
-      {
-        limit: 1000, // 1000 seems to be the most optimal
-        ordered: false,
-        lean: false,
-      },
+    const skipBy = (page - 1) * count;
+    const foundAnswers = await Answer.find(
+      { $and: [{ question_id: questionId }, { reported: { $ne: 1 } }] },
+      null,
+      { skip: skipBy, limit: count },
     );
-    return bulkInserted;
+    return foundAnswers;
   } catch (error) {
-    console.error(error);
+    return error;
+  }
+};
+
+const add = async (questionId, body, name, email, photos) => {
+  try {
+    let addedAnswer;
+    // if question exists
+    if (await Question.exists({ question_id: questionId })) {
+    // will return latest question id before incrementing
+      const latestAnswerId = await LastAnswerId.findOneAndUpdate(
+        {},
+        { $inc: { id: 1 } },
+        { returnDocument: 'after' },
+      );
+      const answerToAdd = {
+        id: latestAnswerId.id,
+        question_id: questionId,
+        body,
+        date: new Date().toISOString().split('T')[0],
+        answerer_name: name,
+        answerer_email: email,
+        reported: 0,
+        helpful: 0,
+        photos,
+      };
+      // add answer with incremented answer id
+      addedAnswer = await Answer.findOneAndUpdate(
+        { id: latestAnswerId.id },
+        answerToAdd,
+        { returnDocument: 'after', upsert: true, runValidators: true },
+      );
+      // add answer to related question in questions' collection
+      await Question.findOneAndUpdate(
+        { question_id: questionId },
+        { $set: { [`answers.${latestAnswerId.id}`]: addedAnswer } },
+        { returnDocument: 'after' },
+      );
+    }
+    return addedAnswer;
+  } catch (error) {
+    return error;
+  }
+};
+
+const markHelpful = async (answerId) => {
+  try {
+    let markedHelpful;
+    if (await Answer.exists({ id: answerId })) {
+      markedHelpful = await Answer.findOneAndUpdate(
+        { id: answerId },
+        { $inc: { helpful: 1 } },
+        { returnDocument: 'after' },
+      );
+      await Question.findOneAndUpdate(
+        { question_id: markedHelpful.question_id },
+        { $inc: { [`answers.${answerId}.helpful`]: 1 } },
+        { returnDocument: 'after' },
+      );
+    }
+    return markedHelpful;
+  } catch (error) {
+    return error;
+  }
+};
+
+const report = async (answerId) => {
+  try {
+    let reported;
+    if (await Answer.exists({ id: answerId })) {
+      reported = await Answer.findOneAndUpdate(
+        { id: answerId },
+        { reported: 1 },
+        { returnDocument: 'after' },
+      );
+      await Question.findOneAndUpdate(
+        { question_id: reported.question_id },
+        { $set: { [`answers.${answerId}.reported`]: 1 } },
+        { returnDocument: 'after' },
+      );
+    }
+    return reported;
+  } catch (error) {
+    return error;
   }
 };
 
 module.exports = {
-  insertMany,
+  findAllBy,
+  add,
+  markHelpful,
+  report,
 };
-
-// TODO: Move this to model queries
-// script to simulate a join between answers and answers' photos
-// mongosh qa --eval 'db.answers.aggregate([
-  // {
-    // "$lookup": {
-      // "from": "answersPhotos",
-      // "localField": "answer_id",
-      // "foreignField": "answer_id",
-      // "as": "photos"
-    // }
-  // }
-// ])'

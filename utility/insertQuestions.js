@@ -13,7 +13,7 @@ const v8 = require('v8');
 // repo require
 const path = require('path');
 const { parser } = require('./parser');
-const { insertMany } = require('../models/mongoDB/questions');
+const { insertMany } = require('../models/mongoDB/forImport/questions');
 
 // various paths
 const pathToQuestions = path.resolve(__dirname, '../database/data/questions.csv');

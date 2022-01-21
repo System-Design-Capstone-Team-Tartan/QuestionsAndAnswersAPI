@@ -13,7 +13,7 @@ const v8 = require('v8');
 // repo require
 const path = require('path');
 const { parser } = require('./parser');
-const { insertMany } = require('../models/mongoDB/answersPhotos');
+const { insertMany } = require('../models/mongoDB/forImport/answersPhotos');
 
 // various paths
 const pathToAnswersPhotos = path.resolve(__dirname, '../database/data/answers_photos.csv');
