@@ -9,27 +9,27 @@ mongoose.connect('mongodb://localhost/qa', (err) => {
 const questionsImportSchema = new mongoose.Schema({
   question_id: { type: Number, unique: true },
   product_id: { type: Number, index: true },
-  question_body: { type: String },
+  question_body: { type: String, minLength: 1, maxLength: 1000 },
   question_date: { type: String },
-  asker_name: { type: String },
-  asker_email: { type: String },
-  reported: { type: Number },
+  asker_name: { type: String, minLength: 1, maxLength: 60 },
+  asker_email: { type: String, minLength: 1, maxLength: 60 },
+  reported: { type: Number, max: 1 },
   question_helpfulness: { type: Number },
 });
 
 const answersImportSchema = new mongoose.Schema({
-  answer_id: { type: Number, unique: true },
+  id: { type: Number, unique: true },
   question_id: { type: Number, index: true },
-  answer_body: { type: String },
-  answer_date: { type: String },
-  answerer_name: { type: String },
-  answerer_email: { type: String },
-  reported: { type: Number },
-  answer_helpfulness: { type: Number },
+  body: { type: String, minLength: 1, maxLength: 1000 },
+  date: { type: String },
+  answerer_name: { type: String, minLength: 1, maxLength: 60 },
+  answerer_email: { type: String, minLength: 1, maxLength: 60 },
+  reported: { type: Number, max: 1 },
+  helpful: { type: Number },
 });
 
 const answersPhotosImportSchema = new mongoose.Schema({
-  photo_id: { type: Number, unique: true },
+  id: { type: Number, unique: true },
   answer_id: { type: Number, index: true },
   url: { type: String },
 });
@@ -43,11 +43,11 @@ const AnswerPhotoImport = mongoose.model('AnswerPhotoImport', answersPhotosImpor
 const questionsSchema = new mongoose.Schema({
   question_id: { type: Number, unique: true },
   product_id: { type: Number, index: true },
-  question_body: { type: String },
+  question_body: { type: String, minLength: 1, maxLength: 1000 },
   question_date: { type: String },
-  asker_name: { type: String },
-  asker_email: { type: String },
-  reported: { type: Number },
+  asker_name: { type: String, minLength: 1, maxLength: 60 },
+  asker_email: { type: String, minLength: 1, maxLength: 60 },
+  reported: { type: Number, max: 1 },
   question_helpfulness: { type: Number },
   answers: {},
 });
@@ -57,19 +57,19 @@ const lastQuestionIdSchema = new mongoose.Schema({
 });
 
 const answersSchema = new mongoose.Schema({
-  answer_id: { type: Number, unique: true },
+  id: { type: Number, unique: true },
   question_id: { type: Number, index: true },
-  answer_body: { type: String },
-  answer_date: { type: String },
-  answerer_name: { type: String },
-  answerer_email: { type: String },
-  reported: { type: Number },
-  answer_helpfulness: { type: Number },
-  photos: { type: String },
+  body: { type: String, minLength: 1, maxLength: 1000 },
+  date: { type: String },
+  answerer_name: { type: String, minLength: 1, maxLength: 60 },
+  answerer_email: { type: String, minLength: 1, maxLength: 60 },
+  reported: { type: Number, max: 1 },
+  helpful: { type: Number },
+  photos: [String],
 });
 
 const lastAnswerIdSchema = new mongoose.Schema({
-  answer_id: { type: Number, unique: true },
+  id: { type: Number, unique: true },
 });
 
 const Question = mongoose.model('Question', questionsSchema);

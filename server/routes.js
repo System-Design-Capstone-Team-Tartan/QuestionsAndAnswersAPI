@@ -22,9 +22,9 @@ router.get('/questions/:question_id/answers', controller.answers.getAnswers);
 router.post('/questions/:question_id/answers', controller.answers.addAnswer);
 
 // PUT answer - mark an answer helpful
-router.post('./answers/:answer_id/helpful', controller.answers.markAnswerHelpful);
+router.put('/answers/:answer_id/helpful', controller.answers.markAnswerHelpful);
 
 // PUT answer - report an answer
-router.post('./answers/:answer_id/report', controller.answers.reportAnswer);
+router.put('/answers/:answer_id/report', controller.answers.reportAnswer);
 
 module.exports = router;

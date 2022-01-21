@@ -4,9 +4,9 @@ const insertMany = async (answersPhotos) => {
   try {
     const answersPhotosToInsert = answersPhotos.map((answersPhoto) => {
       const answersPhotoSchema = {
-        photo_id: answersPhoto[0],
+        id: answersPhoto[0],
         answer_id: answersPhoto[1],
-        url: answersPhoto[2],
+        url: answersPhoto[2].replaceAll('"', ''),
       };
       return answersPhotoSchema;
     });

@@ -6,10 +6,10 @@ const insertMany = async (questions) => {
       const questionSchema = {
         question_id: question[0],
         product_id: question[1],
-        question_body: question[2],
-        question_date: question[3],
-        asker_name: question[4],
-        asker_email: question[5],
+        question_body: question[2].replaceAll('"', ''),
+        question_date: question[3].replaceAll('"', ''),
+        asker_name: question[4].replaceAll('"', ''),
+        asker_email: question[5].replaceAll('"', ''),
         reported: question[6],
         question_helpfulness: question[7],
       };

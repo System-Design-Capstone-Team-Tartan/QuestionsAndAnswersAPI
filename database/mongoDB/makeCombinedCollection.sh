@@ -6,9 +6,28 @@ mongosh qa \
       {
         $lookup: {
           from: "answerphotoimports",
-          localField: "answer_id",
+          localField: "id",
           foreignField: "answer_id",
           as: "photos"
+        }
+      },
+      {
+        $project: {
+          id: 1,
+          question_id: 1,
+          body: 1,
+          date: 1,
+          answerer_name: 1,
+          answerer_email: 1,
+          reported: 1,
+          helpful: 1,
+          photos: {
+            $map: {
+              input: "$photos",
+              as: "photos",
+              in: "$$photos.url"
+            }
+          }
         }
       },
       {
@@ -16,11 +35,11 @@ mongosh qa \
       }
     ])'
 
-#create a unique index for answers, answer_id
+#create a unique index for answers, id
 mongosh qa \
   --eval 'db.answers.createIndex(
     {
-      answer_id: 1
+      id: 1
     },
     {
       unique: true
@@ -35,16 +54,16 @@ mongosh qa \
     }
   )'
 
-# create a collection to store the largest answer_id
+# create a collection to store the largest answer id
 mongosh qa \
   --eval 'db.answers.aggregate([
-      { $sort: { answer_id: -1 }},
+      { $sort: { id: -1 }},
       { $limit: 1 },
-      { $project: { answer_id: 1, _id: 0 } },
+      { $project: { id: 1, _id: 0 } },
       { $out: "lastanswerids" }
 ])'
 
-# combine all answers as an object with its key value as the answer_Id and the value as the answer.
+# combine all answers as an object with its key value as the answer id and the value as the answer.
 mongosh qa \
   --eval 'db.questionimports.aggregate([
     {
@@ -63,7 +82,7 @@ mongosh qa \
               input: "$answers",
               as: "answer",
               in: {
-                k: { $toString: "$$answer.answer_id" },
+                k: { $toString: "$$answer.id" },
                 v: "$$answer"
               }
             }
@@ -76,7 +95,7 @@ mongosh qa \
     }
   ])'
 
-# create a unique index for questions, question_id
+# create a unique index for questions, question id
 mongosh qa \
   --eval 'db.questions.createIndex(
     {

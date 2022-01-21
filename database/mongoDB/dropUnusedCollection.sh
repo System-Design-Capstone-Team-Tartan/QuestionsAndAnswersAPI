@@ -2,11 +2,11 @@
 
 # drop imported collections used to make combined collections
 mongosh qa \
-  --eval 'db.questionsimports.drop'
+  --eval 'db.questionimports.drop()'
 
 mongosh qa \
-  --eval 'db.answerimports.drop'
+  --eval 'db.answerimports.drop()'
 
 mongosh qa \
-  --eval 'db.answerphotoimports.drop'
+  --eval 'db.answerphotoimports.drop()'
 

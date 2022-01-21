@@ -9,17 +9,25 @@ const getQuestions = async (req, res) => {
 
     const page = req.query.page || 1;
     const count = req.query.count || 5;
-    const foundQuestions = await findAllBy(productId, page, count);
+    if (page <= 0 || count <= 0) {
+      throw new Error('Please enter positive integers for pagination criteria');
+    }
 
-    // send back paginated questions
-    console.log(foundQuestions);
+    const foundQuestions = await findAllBy(productId, page, count);
+    if (foundQuestions instanceof Error) {
+      throw foundQuestions;
+    }
     if (foundQuestions.length === 0) {
       throw new Error('No questions found for given product id');
     }
-    return res.send(foundQuestions);
+
+    const result = {
+      product_id: productId,
+      results: foundQuestions,
+    };
+    return res.send(result);
   } catch (error) {
-    console.error(error);
-    return res.status(400).send(error);
+    return res.status(400).json({ error: error.toString() });
   }
 };
 
@@ -34,15 +42,18 @@ const addQuestion = async (req, res) => {
     if (product_id === undefined) {
       throw new Error('Please provide a product id');
     }
+
     const addedQuestion = await add(product_id, body, name, email);
+    if (addedQuestion instanceof Error) {
+      throw addedQuestion;
+    }
     if (addedQuestion === undefined) {
       throw new Error('No such product id found');
     }
-    console.log(addedQuestion);
+
     return res.send(addedQuestion);
   } catch (error) {
-    console.error(error);
-    return res.status(400).send(error);
+    return res.status(400).json({ error: error.toString() });
   }
 };
 
@@ -52,15 +63,18 @@ const markQuestionHelpful = async (req, res) => {
       throw new Error('Please provide a question id');
     }
     const questionId = req.params.question_id;
+
     const markedHelpfulQuestion = await markHelpful(questionId);
+    if (markedHelpfulQuestion instanceof Error) {
+      throw markedHelpfulQuestion;
+    }
     if (markedHelpfulQuestion === undefined) {
       throw new Error('No such question id found');
     }
-    console.log(markedHelpfulQuestion);
+
     return res.send(markedHelpfulQuestion);
   } catch (error) {
-    console.error(error);
-    return res.status(400).send(error);
+    return res.status(400).json({ error: error.toString() });
   }
 };
 
@@ -70,15 +84,18 @@ const reportQuestion = async (req, res) => {
       throw new Error('Please provide a question id');
     }
     const questionId = req.params.question_id;
+
     const reportedQuestion = await report(questionId);
+    if (reportedQuestion instanceof Error) {
+      throw reportedQuestion;
+    }
     if (reportedQuestion === undefined) {
       throw new Error('No such question id found');
     }
-    console.log(reportedQuestion);
+
     return res.send(reportedQuestion);
   } catch (error) {
-    console.error(error);
-    return res.status(400).send(error);
+    return res.status(400).json({ error: error.toString() });
   }
 };
 

@@ -6,7 +6,8 @@
   "scripts": {
     "start": "nodemon server",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "importMongo": "zsh ./database/mongoDB/index.sh"
+    "importMongo": "zsh ./database/mongoDB/index.sh",
+    "dropUnusedCollectionsMongo": "zsh ./database/mongoDB/dropUnusedCollection.sh"
   },
   "repository": {
     "type": "git",

@@ -10,7 +10,6 @@ const findAllBy = async (productId, page, count) => {
     );
     return foundQuestions;
   } catch (error) {
-    console.error('Error with database query');
     return error;
   }
 };
@@ -20,17 +19,18 @@ const add = async (productId, body, name, email) => {
     let addedQuestion;
     // if product exists
     if (await Question.exists({ product_id: productId })) {
-    // will return latest question_id before incrementing
+    // will return latest question id before incrementing
       const latestQuestionId = await LastQuestionId.findOneAndUpdate(
         {},
         { $inc: { question_id: 1 } },
         { returnDocument: 'after' },
       );
+      console.log(latestQuestionId);
       const questionToAdd = {
         question_id: latestQuestionId.question_id,
         product_id: productId,
         question_body: body,
-        question_date: Date(),
+        question_date: new Date().toISOString().split('T')[0],
         asker_name: name,
         asker_email: email,
         reported: 0,
@@ -40,12 +40,11 @@ const add = async (productId, body, name, email) => {
       addedQuestion = await Question.findOneAndUpdate(
         { question_id: latestQuestionId.question_id },
         questionToAdd,
-        { returnDocument: 'after', upsert: true },
+        { returnDocument: 'after', upsert: true, runValidators: true },
       );
     }
     return addedQuestion;
   } catch (error) {
-    console.error('Error with database query');
     return error;
   }
 };
@@ -62,7 +61,6 @@ const markHelpful = async (questionId) => {
     }
     return markedHelpful;
   } catch (error) {
-    console.error('Error with database query');
     return error;
   }
 };
@@ -74,12 +72,11 @@ const report = async (questionId) => {
       reported = await Question.findOneAndUpdate(
         { question_id: questionId },
         { reported: 1 },
-        { returnDocument: 'after' },
+        { returnDocument: 'after', runValidators: true },
       );
     }
     return reported;
   } catch (error) {
-    console.error('Error with database query');
     return error;
   }
 };

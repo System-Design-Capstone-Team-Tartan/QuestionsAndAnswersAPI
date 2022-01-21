@@ -53,7 +53,7 @@ mongosh qa \
 #     }
 #   })'
 
-# ensure question_id is unique
+# ensure question id is unique
 # mongosh qa \
 #   --eval 'db.questions.createIndex( { question_id: 1 }, { unique: true } )'
 
@@ -70,15 +70,15 @@ mongosh qa \
 #     question_helpfulness: 0
 #   })'
 
-## answers.csv headers: answer_id, question_id, answer_body, answer_date, answerer_name, answerer_email, reported, answer_helpfulness
+## answers.csv headers: id, question_id, body, date, answerer_name, answerer_email, reported, helpful
 # mongosh qa \
 #   --eval 'db.createCollection("answers", {
 #     validator: {
 #       $jsonSchema: {
 #         bsonType: "object",
-#         required: ["answer_id", "question_id", "answer_body", "answer_date", "answerer_name", "answerer_email", "reported", "answer_helpfulness"],
+#         required: ["id", "question_id", "body", "date", "answerer_name", "answerer_email", "reported", "helpful"],
 #         properties: {
-#           answer_id: {
+#           id: {
 #             bsonType: "int",
 #             description: "must be an integer and is required"
 #           },
@@ -86,11 +86,11 @@ mongosh qa \
 #             bsonType: "int",
 #             description: "must be a string and is required"
 #           },
-#           answer_body: {
+#           body: {
 #             bsonType: "string",
 #             description: "must be a string and is required"
 #           },
-#           answer_date: {
+#           date: {
 #             bsonType: "string",
 #             description: "must be a string and is required"
 #           },
@@ -106,7 +106,7 @@ mongosh qa \
 #             bsonType: "int",
 #             description: "must be an integer and is required"
 #           },
-#           answer_helpfulness: {
+#           helpful: {
 #             bsonType: "int",
 #             description: "must be an integer and is required"
 #           }
@@ -115,32 +115,32 @@ mongosh qa \
 #     }
 #   })'
 
-# ensure answer_id is unique
+# ensure id is unique
 # mongosh qa \
-#   --eval 'db.answers.createIndex( { answer_id: 1 }, { unique: true } )'
+#   --eval 'db.answers.createIndex( { id: 1 }, { unique: true } )'
 
 # test insert
 # mongosh qa \
 #   --eval 'db.answers.insertOne({
-#     answer_id: 5,
+#     id: 5,
 #     question_id: 2,
-#     answer_body: "this is a test!",
-#     answer_date: "2022-01-04",
+#     body: "this is a test!",
+#     date: "2022-01-04",
 #     answerer_name: "McAnswer",
 #     answerer_email: "mcAnswer@gmail.com",
 #     reported: 0,
-#     answer_helpfulness: 0
+#     helpful: 0
 #   })'
 
-## answers_photos.csv headers: photo_id, answer_id, url
+## answers_photos.csv headers: id, answer_id, url
 # mongosh qa \
 #   --eval 'db.createCollection("answersPhotos", {
 #     validator: {
 #       $jsonSchema: {
 #         bsonType: "object",
-#         required: ["photo_id", "answer_id", "url"],
+#         required: ["id", "answer_id", "url"],
 #         properties: {
-#           photo_id: {
+#           id: {
 #             bsonType: "int",
 #             description: "must be an integer and is required"
 #           },
@@ -159,12 +159,12 @@ mongosh qa \
 
 # ensure photo_ is unique
 # mongosh qa \
-#   --eval 'db.answersPhotos.createIndex( { photo_id: 1 }, { unique: true } )'
+#   --eval 'db.answersPhotos.createIndex( { id: 1 }, { unique: true } )'
 
 # test insert
 # mongosh qa \
 #   --eval 'db.answersPhotos.insertOne({
-#     photo_id: 4,
+#     id: 4,
 #     answer_id: 2,
 #     url: "https://images.unsplash.com/photo-1500603720222-eb7a1f997356?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1653&q=80"
 #   })'
