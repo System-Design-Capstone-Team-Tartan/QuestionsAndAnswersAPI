@@ -85,12 +85,11 @@ const report = async (answerId) => {
         { reported: 1 },
         { returnDocument: 'after' },
       );
-      const test = await Question.findOneAndUpdate(
+      await Question.findOneAndUpdate(
         { question_id: reported.question_id },
         { $set: { [`answers.${answerId}.reported`]: 1 } },
         { returnDocument: 'after' },
       );
-      console.log(test);
     }
     return reported;
   } catch (error) {

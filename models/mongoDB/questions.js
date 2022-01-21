@@ -35,7 +35,6 @@ const add = async (productId, body, name, email) => {
         { $inc: { question_id: 1 } },
         { returnDocument: 'after' },
       );
-      console.log(latestQuestionId);
       const questionToAdd = {
         question_id: latestQuestionId.question_id,
         product_id: productId,
