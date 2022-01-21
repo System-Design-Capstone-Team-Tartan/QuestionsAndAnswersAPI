@@ -1,3 +1,5 @@
+/* eslint-disable object-curly-newline */ // better readability destructured like this
+/* eslint-disable camelcase */ // unavoidable as database headers use camelcase
 const { findAllBy, add, markHelpful, report } = require('../../models/mongoDB/questions');
 
 const getQuestions = async (req, res) => {
@@ -25,7 +27,7 @@ const getQuestions = async (req, res) => {
       product_id: productId,
       results: foundQuestions,
     };
-    return res.send(result);
+    return res.status(200).send(result);
   } catch (error) {
     return res.status(400).json({ error: error.toString() });
   }
@@ -38,7 +40,7 @@ const addQuestion = async (req, res) => {
       body,
       name,
       email,
-    } = req.query;
+    } = req.body;
     if (product_id === undefined) {
       throw new Error('Please provide a product id');
     }
@@ -51,7 +53,7 @@ const addQuestion = async (req, res) => {
       throw new Error('No such product id found');
     }
 
-    return res.send(addedQuestion);
+    return res.status(201).send(addedQuestion);
   } catch (error) {
     return res.status(400).json({ error: error.toString() });
   }
@@ -72,7 +74,7 @@ const markQuestionHelpful = async (req, res) => {
       throw new Error('No such question id found');
     }
 
-    return res.send(markedHelpfulQuestion);
+    return res.status(204).send(markedHelpfulQuestion);
   } catch (error) {
     return res.status(400).json({ error: error.toString() });
   }
@@ -93,7 +95,7 @@ const reportQuestion = async (req, res) => {
       throw new Error('No such question id found');
     }
 
-    return res.send(reportedQuestion);
+    return res.status(204).send(reportedQuestion);
   } catch (error) {
     return res.status(400).json({ error: error.toString() });
   }

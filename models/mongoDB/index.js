@@ -49,8 +49,8 @@ const questionsSchema = new mongoose.Schema({
   asker_email: { type: String, minLength: 1, maxLength: 60 },
   reported: { type: Number, max: 1 },
   question_helpfulness: { type: Number },
-  answers: {},
-});
+  answers: { type: Object, default: {} },
+}, { minimize: false });
 
 const lastQuestionIdSchema = new mongoose.Schema({
   question_id: { type: Number, unique: true },

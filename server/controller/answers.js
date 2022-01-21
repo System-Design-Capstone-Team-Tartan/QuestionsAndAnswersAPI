@@ -1,3 +1,4 @@
+/* eslint-disable object-curly-newline */ // better readability destructured like this
 const { findAllBy, add, markHelpful, report } = require('../../models/mongoDB/answers');
 
 const getAnswers = async (req, res) => {
@@ -25,7 +26,7 @@ const getAnswers = async (req, res) => {
       question_id: questionId,
       results: foundAnswers,
     };
-    return res.send(result);
+    return res.status(200).send(result);
   } catch (error) {
     return res.status(400).json({ error: error.toString() });
   }
@@ -38,7 +39,7 @@ const addAnswer = async (req, res) => {
       name,
       email,
       photos,
-    } = req.query;
+    } = req.body;
     if (req.params.question_id === undefined) {
       throw new Error('Please provide a question id');
     }
@@ -58,7 +59,7 @@ const addAnswer = async (req, res) => {
       throw new Error('No such question id found');
     }
 
-    return res.send(addedAnswer);
+    return res.status(201).send(addedAnswer);
   } catch (error) {
     return res.status(400).json({ error: error.toString() });
   }
@@ -79,7 +80,7 @@ const markAnswerHelpful = async (req, res) => {
       throw new Error('No such answer id found');
     }
 
-    return res.send(markedHelpfulAnswer);
+    return res.status(204).send(markedHelpfulAnswer);
   } catch (error) {
     return res.status(400).json({ error: error.toString() });
   }
@@ -100,7 +101,7 @@ const reportAnswer = async (req, res) => {
       throw new Error('No such answer id found');
     }
 
-    return res.send(reportedAnswer);
+    return res.status(204).send(reportedAnswer);
   } catch (error) {
     return res.status(400).json({ error: error.toString() });
   }

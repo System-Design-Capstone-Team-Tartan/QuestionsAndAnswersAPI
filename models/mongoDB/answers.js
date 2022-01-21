@@ -44,7 +44,7 @@ const add = async (questionId, body, name, email, photos) => {
       );
       // add answer to related question in questions' collection
       await Question.findOneAndUpdate(
-        { id: questionId },
+        { question_id: questionId },
         { $set: { [`answers.${latestAnswerId.id}`]: addedAnswer } },
         { returnDocument: 'after' },
       );
@@ -64,6 +64,11 @@ const markHelpful = async (answerId) => {
         { $inc: { helpful: 1 } },
         { returnDocument: 'after' },
       );
+      await Question.findOneAndUpdate(
+        { question_id: markedHelpful.question_id },
+        { $inc: { [`answers.${answerId}.helpful`]: 1 } },
+        { returnDocument: 'after' },
+      );
     }
     return markedHelpful;
   } catch (error) {
@@ -80,6 +85,12 @@ const report = async (answerId) => {
         { reported: 1 },
         { returnDocument: 'after' },
       );
+      const test = await Question.findOneAndUpdate(
+        { question_id: reported.question_id },
+        { $set: { [`answers.${answerId}.reported`]: 1 } },
+        { returnDocument: 'after' },
+      );
+      console.log(test);
     }
     return reported;
   } catch (error) {

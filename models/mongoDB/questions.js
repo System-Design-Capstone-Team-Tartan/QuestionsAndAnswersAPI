@@ -8,6 +8,16 @@ const findAllBy = async (productId, page, count) => {
       null,
       { skip: skipBy, limit: count }, // will count reported questions
     );
+    foundQuestions.map((question) => {
+      const answersTuples = Object.entries(question.answers);
+      for (let i = 0; i < answersTuples.length; i += 1) {
+        if (answersTuples[i][1].reported === 1) {
+          const answerId = answersTuples[i][0];
+          delete question.answers[answerId];
+        }
+      }
+      return question;
+    });
     return foundQuestions;
   } catch (error) {
     return error;
