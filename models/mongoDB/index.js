@@ -1,3 +1,4 @@
+/* eslint-disable no-console */ // console is intended to show status
 const mongoose = require('mongoose');
 
 mongoose.connect(`mongodb://${process.env.DB_HOST}:27017/qa`, {

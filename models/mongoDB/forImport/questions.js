@@ -1,3 +1,5 @@
+/* eslint-disable no-console */ // console is intended show process times and errors
+/* eslint-disable consistent-return */ // no return in catch blocks to break script
 const { QuestionImport } = require('../index');
 
 const insertMany = async (questions) => {
