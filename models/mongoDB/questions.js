@@ -1,3 +1,4 @@
+/* eslint-disable no-param-reassign */ // not a param reassignment
 const { Question, LastQuestionId } = require('./index');
 
 const findAllBy = async (productId, page, count) => {
