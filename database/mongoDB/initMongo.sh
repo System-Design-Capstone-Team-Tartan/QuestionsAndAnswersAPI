@@ -1,8 +1,8 @@
 #!/bin/zsh
 
 # drop current database 'qa'
-mongosh qa \
-  --eval 'db.dropDatabase()'
+# mongosh qa \
+#   --eval 'db.dropDatabase()'
 
 ### VALIDATION QUERIES
 
