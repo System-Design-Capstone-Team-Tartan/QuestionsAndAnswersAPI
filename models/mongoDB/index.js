@@ -1,10 +1,12 @@
 const mongoose = require('mongoose');
 
-mongoose.connect('mongodb://localhost/qa', (err) => {
-  if (err) {
-    throw err;
-  }
-});
+mongoose.connect(`mongodb://${process.env.DB_HOST}:27017/qa`, {
+  user: process.env.DB_USER,
+  pass: process.env.DB_PASS,
+  authSource: 'admin',
+})
+  .then(() => console.log('Database connected'))
+  .catch((error) => console.log(error));
 
 const questionsImportSchema = new mongoose.Schema({
   question_id: { type: Number, unique: true },
