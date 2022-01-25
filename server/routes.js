@@ -7,7 +7,7 @@ const router = express.Router();
 router.get('/questions', controller.questions.getQuestions);
 
 // POST question
-router.post('/questions/', controller.questions.addQuestion);
+router.post('/questions', controller.questions.addQuestion);
 
 // PUT question - mark a question helpful
 router.put('/questions/:question_id/helpful', controller.questions.markQuestionHelpful);
