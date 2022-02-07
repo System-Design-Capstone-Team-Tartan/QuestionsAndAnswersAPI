@@ -3,10 +3,8 @@
 This is the Atelier API service that services the Catwalk website for all questions and related answers for a product. This is a RESTful API, please use the following routes for this API.
 
 ## **Important**
----
 Please ensure parameters are sent as noted in the parameter headers below, either as request params, query, or within the body.
 
----
 <br/>
 
 ## **List of Questions**
