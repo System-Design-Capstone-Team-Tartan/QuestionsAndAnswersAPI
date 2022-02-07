@@ -1,13 +1,13 @@
 # Questions and Answers API
 
-This is the Atelier API service that services the Catwalk Website for all questions and related answers for a product. This is a RESTful API, please use the following routes for this API.
+This is the Atelier API service that services the Catwalk website for all questions and related answers for a product. This is a RESTful API, please use the following routes for this API.
 
 ## **Important**
 ---
 Please ensure parameters are sent as noted in the parameter headers below, either as request params, query, or within the body.
 
 ---
-</br>
+<br/>
 
 ## **List of Questions**
 
@@ -81,7 +81,7 @@ Please ensure parameters are sent as noted in the parameter headers below, eithe
   ]
 }
 ```
-</br>
+<br/>
 
 ## **List of Answers**
 
@@ -145,19 +145,11 @@ Please ensure parameters are sent as noted in the parameter headers below, eithe
   ]
 }
 ```
-</br>
+<br/>
 
-
-POST /qa/questions
-
-Parameters
-product_id, integer
-body, string
-name, string
-email, string
 ## **Add a Question**
 
-`POST /qa/questions` will add a question for a particular product. This endpoint will return the added question with certain fields generated such as a question_id and a timestamp for client use.
+`POST /qa/questions` will add a question for a particular product. This endpoint will return the added question with certain fields generated such as a question_id and a timestamp.
 
 <br/>
 
@@ -215,39 +207,132 @@ email, string
   ]
 }
 ```
-</br>
+<br/>
 
+## **Add an Answer**
 
+`POST /qa/questions/:question_id/answers` will add an answer for a particular question. This endpoint will return the added answer with certain fields generated such as a answer_id and a timestamp.
 
-PUT /qa/questions/:question_id/helpful
+<br/>
 
-Parameters
-question_id, integer
+**Parameters**
 
-PUT /qa/questions/:question_id/report
+|Parameter|Type|Description|
+|---|---|---|
+|question_id|integer|Specifies the question for which to retrieve answers.|
 
-Parameters
-question_id, integer
+|Body Parameter|Type|Description|
+|---|---|---|
+|body|text|The required text of answer. Must not be empty|
+|name|text|The required text of the username answering the question. Must not be empty|
+|email|text|The required text of the answerer's email address. Must not be empty|
+|photos|"["text"]"|A JSON array of urls corresponding to images to display
 
+<br/>
 
+**Response**
 
-POST /qa/questions/:question_id/answers
+`Staus: 201 CREATED`
 
-Parameters
-question_id, int
-body, string
-name, string
-email, string
-photos, [string]
+<br/>
 
-PUT /qa/answers/:answer_id/helpful
+**Sample Data**
+```json
+{
+  "_id": "6201417228940e2d34ba8df4",
+  "id": 12392957,
+  "__v": 0,
+  "answerer_email": "mctest@test.com",
+  "answerer_name": "mctester",
+  "body": "this is a test answer",
+  "date": "2022-02-07",
+  "helpful": 0,
+  "photos": [
+      "test.com",
+      "test2.com"
+  ],
+  "question_id": 5,
+  "reported": 0
+}
+```
+<br/>
 
-Parameters
-answer_id, integer
+## **Mark Question Helpful**
 
-PUT /qa/answers/:answer_id/report
+`PUT /qa/questions/:question_id/helpful` will increment a counter that tracks how helpful a question has been.
 
-Parameters
-answer_id, integer
+<br/>
+
+**Parameters**
+
+|Parameter|Type|Description|
+|---|---|---|
+|question_id|integer|Specifies the question for which to mark helpful.|
+
+<br/>
+
+**Response**
+
+`Staus: 204 NO CONTENT`
+
+<br/>
+
+## **Report Question**
+
+`PUT /qa/questions/:question_id/report` will report a question.
+
+<br/>
+
+**Parameters**
+
+|Parameter|Type|Description|
+|---|---|---|
+|question_id|integer|Specifies the question for which to report.|
+
+<br/>
+
+**Response**
+
+`Staus: 204 NO CONTENT`
+
+<br/>
+
+## **Mark Answer Helpful**
+
+`PUT /qa/answers/:answer_id/helpful` will increment a counter that tracks how helpful an answer has been.
+
+<br/>
+
+**Parameters**
+
+|Parameter|Type|Description|
+|---|---|---|
+|answer_id|integer|Specifies the answer for which to mark helpful.|
+
+<br/>
+
+**Response**
+
+`Staus: 204 NO CONTENT`
+
+<br/>
+
+## **Report Answer**
+
+`PUT /qa/answers/:answer_id/report` will report an answer.
+
+<br/>
+
+**Parameters**
+
+|Parameter|Type|Description|
+|---|---|---|
+|answer_id|integer|Specifies the answer for which to report.|
+
+<br/>
+
+**Response**
+
+`Staus: 204 NO CONTENT`
 
 
